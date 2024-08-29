@@ -1,0 +1,45 @@
+name: Typecheck examples
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+        with:
+          path: main
+
+      - uses: actions/setup-go@v5
+
+      - name: Download latest nightly Juvix binary
+        uses: jaxxstorm/action-install-gh-release@v1.10.0
+        with:
+          repo: anoma/juvix-nightly-builds
+          cache: enable
+
+      - name: checkout lmt
+        uses: actions/checkout@v4
+        with:
+          repository: driusan/lmt
+          path: lmt
+
+      - name: build lmt
+        working-directory: lmt
+        run: |
+          go build -o lmt main.go
+          echo "$PWD" >> $GITHUB_PATH
+
+      - name: Build juvix files
+        working-directory: main
+        run: lmt juvix-by-example.md
+
+      - name: Typecheck examples
+        working-directory: main/src
+        run: juvix typecheck
