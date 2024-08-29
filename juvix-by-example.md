@@ -137,6 +137,8 @@ doubleTwo : Int := doubleMe 2;
 main : IO := printIntLn doubleTwo;
 
 ```
+
+```
 $ juvix eval Functions.juvix
 4
 ```
