@@ -118,3 +118,65 @@ main : IO :=
 $ juvix eval If.juvix
 7 has 1 digit
 ```
+
+## Functions
+
+To define a function in Juvix we simply write the function name, its arguments and return type followed by the function body.
+
+Functions are called using the name of the function followed by the parameters separated by spaces.
+
+```juvix src/Functions.juvix
+module Functions;
+
+import Stdlib.Prelude open;
+
+doubleMe (x : Int) : Int := x + x;
+
+doubleTwo : Int := doubleMe 2;
+
+main : IO := printIntLn doubleTwo;
+
+```
+$ juvix eval Functions.juvix
+4
+```
+
+## Custom Data Types
+
+Juvix custom data types are declared using the `type` keyword.
+
+A _record_ is a collection of fields.
+
+
+```juvix src/Records.juvix
+module Records;
+
+import Stdlib.Prelude open;
+
+-- The `Person` record has `name` and `age` fields.
+type Person :=
+  mkPerson {
+    name : String;
+    age : Nat
+  };
+
+-- `mkPerson` constructs a `Person` record value.
+alice : Person :=
+  mkPerson@{
+    name := "Alice";
+    age := 42
+  };
+
+-- The functions `Person.name` and `Person.age` can be used to access the data in a record value.
+main : IO :=
+  printString "name: "
+    >>> printStringLn (Person.name alice)
+    >>> printString "age: "
+    >>> printNatLn (Person.age alice);
+```
+
+```
+$ juvix eval Records.juvix
+name: Alice
+age: 42
+```
